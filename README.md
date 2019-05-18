@@ -1,2 +1,2 @@
 # pytest-envvars
-Pytest plugin to check use of envvars on your tests 
+Pytest plugin to validate use of envvars on your tests
