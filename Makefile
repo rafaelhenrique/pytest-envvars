@@ -34,5 +34,7 @@ test-release: clear install-tools-for-release dist ## Release package to Test Py
 	@python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
 release: clear install-tools-for-release dist ## Release package to PyPI
+	@git tag `python setup.py -q version`
+	@git push origin `python setup.py -q version`
 	@python -m twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
 
