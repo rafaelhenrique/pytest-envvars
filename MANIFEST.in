@@ -1,7 +1,7 @@
 include LICENSE
-include AUTHORS.md
-include CHANGES.md
-include README.md
+include AUTHORS.rst
+include CHANGES.rst
+include README.rst
 
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]

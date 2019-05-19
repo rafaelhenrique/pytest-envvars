@@ -13,7 +13,7 @@ def read(fname):
 
 
 def get_version():
-    changes_path = os.path.join(BASE_PATH, 'CHANGES.md')
+    changes_path = os.path.join(BASE_PATH, 'CHANGES.rst')
     regex = r'^#*\s*(?P<version>[0-9]+\.[0-9]+(\.[0-9]+)?)$'
     with codecs.open(changes_path, encoding='utf-8') as changes_file:
         for line in changes_file:
@@ -50,7 +50,7 @@ setup(
     license='MIT',
     url='https://github.com/rafaelhenrique/pytest-envvars',
     description='Pytest plugin to validate use of envvars on your tests ',
-    long_description=read('README.md'),
+    long_description=read('README.rst'),
     py_modules=['pytest_envvars'],
     install_requires=['pytest>=3.0.0'],
     classifiers=[
