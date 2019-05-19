@@ -30,10 +30,10 @@ install-tools-for-release:
 dist: ## Create a dist directory
 	@python setup.py sdist bdist_wheel
 
-test-release: clear install-tools-for-release dist ## Release package to Test PyPI
+test-release: clean install-tools-for-release dist ## Release package to Test PyPI
 	@python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
-release: clear install-tools-for-release dist ## Release package to PyPI
+release: clean install-tools-for-release dist ## Release package to PyPI
 	@git tag `python setup.py -q version`
 	@git push origin `python setup.py -q version`
 	@python -m twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
