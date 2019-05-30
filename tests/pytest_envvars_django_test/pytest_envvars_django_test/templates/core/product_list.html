@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <title>Only for test purpouses</title>
+    </head>
+    <body>
+        <p>Objects in the database:</p>
+        {% for object in object_list %}
+            <p>{{ object.name }}</p>
+        {% endfor %}
+
+        <p>Envvars in settings:</p>
+        <p>{{ pytest_envvar_bool }}</p>
+        <p>{{ pytest_envvar_str }}</p>
+        <p>{{ pytest_envvar_int }}</p>
+        <p>{{ pytest_envvar_float }}</p>
+        <p>{{ pytest_envvar_list }}</p>
+        <p>{{ pytest_envvar_tuple }}</p>
+    </body>
+</html>
