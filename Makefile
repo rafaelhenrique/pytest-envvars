@@ -22,7 +22,7 @@ install-tox:
 	@pip install tox
 
 test: install-tox ## Run tests with Python 3.7
-	tox -e py37
+	tox -e py37,lint
 
 install-tools-for-release:
 	@pip install --upgrade setuptools wheel twine
