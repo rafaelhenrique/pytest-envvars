@@ -1,7 +1,7 @@
+from django.conf import settings
 from django.views.generic import ListView
 
-from .models import Product
-from django.conf import settings
+from tests.pytest_envvars_django_test.core.models import Product
 
 
 class ProductList(ListView):

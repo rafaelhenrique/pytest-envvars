@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # local apps
-    'core',
+    'tests.pytest_envvars_django_test.core',
 ]
 
 MIDDLEWARE = [
