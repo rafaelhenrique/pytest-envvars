@@ -17,7 +17,7 @@ def django_testdir(request, testdir, monkeypatch):
     project_source = REPOSITORY_ROOT.joinpath(PROJECT_NAME)
     project_destination = project_root.join(PROJECT_NAME)
 
-    shutil.copytree(project_source, project_destination)
+    shutil.copytree(str(project_source), str(project_destination))
     monkeypatch.setenv("DJANGO_SETTINGS_MODULE", DJANGO_SETTINGS_MODULE)
     monkeypatch.setenv("SECRET_KEY", "xablau")
 
