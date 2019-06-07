@@ -19,6 +19,7 @@ def django_testdir(request, testdir, monkeypatch):
 
     shutil.copytree(project_source, project_destination)
     monkeypatch.setenv("DJANGO_SETTINGS_MODULE", DJANGO_SETTINGS_MODULE)
+    monkeypatch.setenv("SECRET_KEY", "xablau")
 
     def create_test_module(test_code, filename="test_the_test.py"):
         testfile = project_destination.join(filename)
