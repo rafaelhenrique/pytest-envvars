@@ -1,4 +1,4 @@
-from pytest_envvars.lazy_django import is_django_project
+from pytest_envvars.django_utils import is_django_project
 
 
 def test_read_envvar_from_context_with_incorrect_test(django_testdir):

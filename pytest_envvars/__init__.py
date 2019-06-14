@@ -1,5 +1,5 @@
 from pytest_envvars.validators import PytestEnvvarsValidator
-from pytest_envvars.lazy_django import is_django_project
+from pytest_envvars.django_utils import is_django_project
 
 
 def pytest_addoption(parser):

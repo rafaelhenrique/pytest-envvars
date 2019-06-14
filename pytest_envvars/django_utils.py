@@ -1,6 +1,4 @@
 """
-Helpers to load Django lazily when Django settings can't be configured.
-
 This module is based on pytest-django project.
 Reference: https://github.com/pytest-dev/pytest-django
 """
