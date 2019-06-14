@@ -22,7 +22,7 @@ install-tox:
 	@pip install tox
 
 test-tox: install-tox ## Run tests with tox and Python 3.7
-	tox -e py37,lint
+	tox -e py37,lint -r
 
 test: ## Run tests
 	@PYTHONPATH=. pytest .
