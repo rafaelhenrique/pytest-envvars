@@ -27,3 +27,17 @@ def django_settings_is_configured():
         return sys.modules["django.conf"].settings.configured
 
     return ret
+
+
+def get_custom_envvars():
+    """Return custom envvars of django project"""
+    from django.conf import settings, global_settings
+    common_envvar_names = {
+        "BASE_DIR",
+        "BASE_PATH",
+        "ROOT_URLCONF",
+    }
+
+    django_global_settings = set(global_settings.__dict__.keys()).union(common_envvar_names)
+    django_settings = settings._explicit_settings
+    return django_settings.difference(django_global_settings)

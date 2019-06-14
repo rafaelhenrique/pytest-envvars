@@ -1,4 +1,4 @@
-from pytest_envvars.django_utils import is_django_project
+from pytest_envvars.django_utils import is_django_project, get_custom_envvars
 
 
 def test_read_envvar_from_context_with_incorrect_test(django_testdir):
@@ -61,3 +61,15 @@ def test_is_django_project_without_django_project():
 
 def test_is_django_project_with_django_project(django_environment):
     assert is_django_project() is True
+
+
+def test_get_custom_envvars(django_environment):
+    custom_envvars = get_custom_envvars()
+    assert custom_envvars == {
+        "PYTEST_ENVVAR_FLOAT",
+        "PYTEST_ENVVAR_INT",
+        "PYTEST_ENVVAR_LIST",
+        "PYTEST_ENVVAR_TUPLE",
+        "PYTEST_ENVVAR_STR",
+        "PYTEST_ENVVAR_BOOL",
+    }
