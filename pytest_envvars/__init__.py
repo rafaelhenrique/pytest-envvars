@@ -1,7 +1,4 @@
-import random
-import os
-
-from importlib import reload
+from pytest_envvars.validators import PytestEnvvarsValidator
 
 
 def pytest_addoption(parser):
@@ -21,14 +18,3 @@ def pytest_cmdline_main(config):
     if config.option.envvars_validate:
         pytest_envvars_validator = PytestEnvvarsValidator()
         config.pluginmanager.register(pytest_envvars_validator)
-
-
-class PytestEnvvarsValidator:
-
-    def pytest_runtest_setup(self, item):
-        os.environ['PYTEST_ENVVAR_STR'] = random.choice(['0', '1'])
-
-        from django import conf
-        from pytest_envvars_django_test import settings
-        reload(conf)
-        reload(settings)
