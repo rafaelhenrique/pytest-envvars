@@ -3,6 +3,8 @@ from django.views.generic import ListView
 
 from tests.pytest_envvars_django_test.core.models import Product
 
+GLOBAL_VARIABLE = settings.PYTEST_ENVVAR_STR + '_global'
+
 
 class ProductList(ListView):
     model = Product
@@ -15,4 +17,5 @@ class ProductList(ListView):
         context['pytest_envvar_float'] = settings.PYTEST_ENVVAR_FLOAT
         context['pytest_envvar_list'] = settings.PYTEST_ENVVAR_LIST
         context['pytest_envvar_tuple'] = settings.PYTEST_ENVVAR_TUPLE
+        context['global_variable'] = GLOBAL_VARIABLE
         return context
