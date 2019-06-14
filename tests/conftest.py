@@ -11,15 +11,19 @@ PROJECT_NAME = "pytest_envvars_django_test"
 DJANGO_SETTINGS_MODULE = "tests.pytest_envvars_django_test.pytest_envvars_django_test.settings"
 
 
+@pytest.fixture
+def django_environment(monkeypatch):
+    monkeypatch.setenv("DJANGO_SETTINGS_MODULE", DJANGO_SETTINGS_MODULE)
+    monkeypatch.setenv("SECRET_KEY", "xablau")
+
+
 @pytest.fixture(scope="function")
-def django_testdir(request, testdir, monkeypatch):
+def django_testdir(request, testdir, django_environment):
     project_root = testdir.tmpdir
     project_source = REPOSITORY_ROOT.joinpath(PROJECT_NAME)
     project_destination = project_root.join(PROJECT_NAME)
 
     shutil.copytree(str(project_source), str(project_destination))
-    monkeypatch.setenv("DJANGO_SETTINGS_MODULE", DJANGO_SETTINGS_MODULE)
-    monkeypatch.setenv("SECRET_KEY", "xablau")
 
     def create_test_module(test_code, filename="test_the_test.py"):
         testfile = project_destination.join(filename)

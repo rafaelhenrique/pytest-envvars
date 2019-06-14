@@ -59,8 +59,5 @@ def test_is_django_project_without_django_project():
     assert is_django_project() is False
 
 
-def test_is_django_project_with_django_project(monkeypatch):
-    DJANGO_SETTINGS_MODULE = "tests.pytest_envvars_django_test.pytest_envvars_django_test.settings"
-    monkeypatch.setenv("DJANGO_SETTINGS_MODULE", DJANGO_SETTINGS_MODULE)
-
+def test_is_django_project_with_django_project(django_environment):
     assert is_django_project() is True
