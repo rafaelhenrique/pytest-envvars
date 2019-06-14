@@ -1,4 +1,4 @@
-def test_read_envvar_from_context_without_set_environment(django_testdir):
+def test_read_envvar_from_context_with_incorrect_test(django_testdir):
     django_testdir.create_test_module("""
         import pytest
 
@@ -14,7 +14,7 @@ def test_read_envvar_from_context_without_set_environment(django_testdir):
     result.stdout.fnmatch_lines(["*test_context_values FAILED*"])
 
 
-def test_read_envvar_from_context_setting_correct_environment(django_testdir):
+def test_read_envvar_from_context_with_correct_test(django_testdir):
     django_testdir.create_test_module("""
         import pytest
 
