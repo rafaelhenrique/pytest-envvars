@@ -1,3 +1,8 @@
+import random
+import os
+
+from importlib import reload
+
 
 def pytest_addoption(parser):
     """Parse parameters from command line"""
@@ -14,4 +19,16 @@ def pytest_addoption(parser):
 def pytest_cmdline_main(config):
     """Get parameters from command line and make actions"""
     if config.option.envvars_validate:
-        print('Olá como vai!')
+        pytest_envvars_validator = PytestEnvvarsValidator()
+        config.pluginmanager.register(pytest_envvars_validator)
+
+
+class PytestEnvvarsValidator:
+
+    def pytest_runtest_setup(self, item):
+        os.environ['PYTEST_ENVVAR_STR'] = random.choice(['0', '1'])
+
+        from django import conf
+        from pytest_envvars_django_test import settings
+        reload(conf)
+        reload(settings)
