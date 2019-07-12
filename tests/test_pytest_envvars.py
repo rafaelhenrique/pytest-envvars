@@ -72,4 +72,5 @@ def test_get_custom_envvars(django_environment):
         "PYTEST_ENVVAR_TUPLE",
         "PYTEST_ENVVAR_STR",
         "PYTEST_ENVVAR_BOOL",
+        "PYTEST_ENVVAR_GENERIC_USE",
     }
