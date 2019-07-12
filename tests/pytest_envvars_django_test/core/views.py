@@ -19,3 +19,7 @@ class ProductList(ListView):
         context['pytest_envvar_tuple'] = settings.PYTEST_ENVVAR_TUPLE
         context['pytest_envvar_generic_use'] = GLOBAL_VARIABLE
         return context
+
+
+def some_function():
+    return GLOBAL_VARIABLE
