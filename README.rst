@@ -15,7 +15,7 @@ Note
 Warning: pytest-envvars is **beta**.
 
 What is pytest-envvars?
-----------------------
+-----------------------
 
 pytest-envvars change values of environment variables on your unit tests to check consistency of mocks. If the test has a wrong mock, this test will be broken.
 
@@ -24,13 +24,13 @@ pytest-envvars changes the values of the environment variables in your unit test
 Install
 -------
 
-.. code-block:: command
+.. code-block:: bash
 
-    pip install pytest-envvars
+    $ pip install pytest-envvars
 
 Use
 ---
 
-.. code-block:: command
+.. code-block:: bash
 
-    pytest --envvars-validate
+    $ pytest --envvars-validate
