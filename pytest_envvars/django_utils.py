@@ -5,6 +5,7 @@ Reference: https://github.com/pytest-dev/pytest-django
 
 import os
 import sys
+from importlib import reload
 
 
 def is_django_project():
@@ -40,4 +41,10 @@ def get_custom_envvars():
 
     django_global_settings = set(global_settings.__dict__.keys()).union(common_envvar_names)
     django_settings = settings._explicit_settings
-    return django_settings.difference(django_global_settings)
+    custom_envvars = django_settings.difference(django_global_settings)
+
+    # avoid conflict on load with _dj_autoclear_mailbox of pytest-django
+    import django.conf
+    reload(django.conf)
+
+    return custom_envvars
