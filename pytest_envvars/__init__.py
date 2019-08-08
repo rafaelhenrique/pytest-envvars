@@ -1,4 +1,4 @@
-from pytest_envvars.validators import PytestEnvvarsValidator, RandomizeEnvvars
+from pytest_envvars.hooks import PytestEnvvarsValidator, RandomizeEnvvars
 from pytest_envvars.django_utils import is_django_project
 
 
