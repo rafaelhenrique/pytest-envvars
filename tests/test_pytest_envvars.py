@@ -16,6 +16,15 @@ def test_read_envvar_from_context_with_wrong_tests(django_testdir):
             assert some_function() == 'xablau'
     """)
 
+    result = django_testdir.runpytest('--randomize-envvars')
+    assert result.ret == 1
+    result.stdout.fnmatch_lines([
+        "*test_context_values FAILED*",
+        "*test_some_function FAILED*",
+    ])
+    output = result.stdout.str().split()
+    assert Counter(output)['AssertionError:'] == 2
+
     result = django_testdir.runpytest('--envvars-validate')
     assert result.ret == 1
     result.stdout.fnmatch_lines([
@@ -47,6 +56,12 @@ def test_read_envvar_from_context_with_correct_test(django_testdir):
 
             assert some_function() == 'xablau'
     """)
+
+    result = django_testdir.runpytest('--randomize-envvars')
+    assert result.ret == 0
+    result.stdout.fnmatch_lines([
+        "*test_some_function PASSED*",
+    ])
 
     result = django_testdir.runpytest('--envvars-validate')
     assert result.ret == 0

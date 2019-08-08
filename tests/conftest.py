@@ -15,7 +15,6 @@ DJANGO_SETTINGS_MODULE = "tests.pytest_envvars_django_test.pytest_envvars_django
 def django_environment(monkeypatch):
     monkeypatch.setenv("DJANGO_SETTINGS_MODULE", DJANGO_SETTINGS_MODULE)
     monkeypatch.setenv("SECRET_KEY", "xablau")
-    monkeypatch.setenv("PYTEST_ENVVAR_GENERIC_USE", "xablau")
 
 
 @pytest.fixture(scope="function")

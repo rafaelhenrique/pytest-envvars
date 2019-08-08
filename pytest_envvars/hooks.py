@@ -43,4 +43,4 @@ class PytestEnvvarsValidator:
 class RandomizeEnvvars:
 
     def pytest_load_initial_conftests(args, early_config, parser):
-        pass
+        os.environ['PYTEST_ENVVAR_GENERIC_USE'] = '1'
