@@ -6,12 +6,12 @@ def test_is_django_project_without_django_project():
     assert is_django_project() is False
 
 
-def test_is_django_project_with_django_project(django_environment):
+def test_is_django_project_with_django_project(default_django_environment):
     assert is_django_project() is True
 
 
 @pytest.mark.skip("This function needs an fix, we cannot call settings._explicit_settings")
-def test_get_custom_envvars(django_environment):
+def test_get_custom_envvars(default_django_environment):
     custom_envvars = get_custom_envvars()
     assert custom_envvars == {
         "PYTEST_ENVVAR_FLOAT",

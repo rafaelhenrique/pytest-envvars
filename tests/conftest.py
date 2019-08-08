@@ -12,7 +12,7 @@ DJANGO_SETTINGS_MODULE = "tests.pytest_envvars_django_test.pytest_envvars_django
 
 
 @pytest.fixture
-def django_environment(monkeypatch):
+def default_django_environment(monkeypatch):
     monkeypatch.setenv("DJANGO_SETTINGS_MODULE", DJANGO_SETTINGS_MODULE)
     monkeypatch.setenv("SECRET_KEY", "xablau")
 
@@ -35,7 +35,7 @@ def default_tox_ini_file(testdir):
 
 
 @pytest.fixture(scope="function")
-def django_testdir(request, testdir, django_environment, default_tox_ini_file):
+def django_testdir(request, testdir, default_django_environment):
     project_root = testdir.tmpdir
     project_source = REPOSITORY_ROOT.joinpath(PROJECT_NAME)
     project_destination = project_root.join(PROJECT_NAME)
