@@ -28,7 +28,6 @@ def test_read_envvar_from_context_with_wrong_tests(django_testdir, default_env_f
 
 
 def test_read_envvar_from_context_with_correct_test(django_testdir, default_env_file):
-    django_testdir.create_env_file("PYTEST_ENVVAR_GENERIC_USE=xablau")
     django_testdir.create_test_module("""
         import pytest
         from tests.pytest_envvars_django_test.core.views import some_function
