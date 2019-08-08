@@ -1,8 +1,5 @@
 from collections import Counter
 
-from pytest_envvars.django_utils import get_custom_envvars, is_django_project
-from pytest_envvars.utils import get_modules_to_reload
-
 
 def test_read_envvar_from_context_with_wrong_tests(django_testdir):
     django_testdir.create_test_module("""
@@ -56,35 +53,3 @@ def test_read_envvar_from_context_with_correct_test(django_testdir):
     result.stdout.fnmatch_lines([
         "*test_some_function PASSED*",
     ])
-
-
-def test_is_django_project_without_django_project():
-    assert is_django_project() is False
-
-
-def test_is_django_project_with_django_project(django_environment):
-    assert is_django_project() is True
-
-
-def test_get_custom_envvars(django_environment):
-    custom_envvars = get_custom_envvars()
-    assert custom_envvars == {
-        "PYTEST_ENVVAR_FLOAT",
-        "PYTEST_ENVVAR_INT",
-        "PYTEST_ENVVAR_LIST",
-        "PYTEST_ENVVAR_TUPLE",
-        "PYTEST_ENVVAR_STR",
-        "PYTEST_ENVVAR_BOOL",
-        "PYTEST_ENVVAR_GENERIC_USE",
-    }
-
-
-def test_get_modules_to_reload():
-    from pytest_envvars_modules_test import main
-    from pytest_envvars_modules_test.generic import generic
-
-    modules = get_modules_to_reload(main.__file__)
-    assert modules == {'drink', 'listen', 'drink.beer'}
-
-    modules = get_modules_to_reload(generic.__file__)
-    assert modules == {'drink', 'listen', 'drink.beer'}
