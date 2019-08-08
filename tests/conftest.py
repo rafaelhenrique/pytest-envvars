@@ -17,8 +17,25 @@ def django_environment(monkeypatch):
     monkeypatch.setenv("SECRET_KEY", "xablau")
 
 
+@pytest.fixture
+def default_env_file(django_testdir):
+    django_testdir.create_env_file("PYTEST_ENVVAR_GENERIC_USE=xablau")
+
+
+@pytest.fixture
+def default_tox_ini_file(testdir):
+    testdir.makeini(
+        """
+        [pytest]
+        addopts = -vv --tb=native
+        env_files =
+            .env
+        """
+    )
+
+
 @pytest.fixture(scope="function")
-def django_testdir(request, testdir, django_environment):
+def django_testdir(request, testdir, django_environment, default_tox_ini_file):
     project_root = testdir.tmpdir
     project_source = REPOSITORY_ROOT.joinpath(PROJECT_NAME)
     project_destination = project_root.join(PROJECT_NAME)
@@ -30,13 +47,13 @@ def django_testdir(request, testdir, django_environment):
         testfile.write(dedent(test_code), ensure=True)
         return testfile
 
+    def create_env_file(env_code, filename=".env"):
+        envfile = project_destination.join(filename)
+        envfile.write(dedent(env_code), ensure=True)
+        return envfile
+
     testdir.create_test_module = create_test_module
+    testdir.create_env_file = create_env_file
     testdir.project_root = project_root
 
-    testdir.makeini(
-        """
-        [pytest]
-        addopts = -vv --tb=native
-        """
-    )
     return testdir

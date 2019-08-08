@@ -1,31 +1,30 @@
-from pytest_envvars.hooks import PytestEnvvarsValidator, RandomizeEnvvars
-from pytest_envvars.django_utils import is_django_project
+import glob
+import os
+import random
+
+import pytest
 
 
 def pytest_addoption(parser):
-    """Parse parameters from command line"""
-    group = parser.getgroup('envvars')
-    group.addoption(
-        '--envvars-validate',
-        action='store_true',
-        dest='envvars_validate',
-        default=False,
-        help='Validate envvars of your tests'
-    )
-    group.addoption(
-        '--randomize-envvars',
-        action='store_true',
-        dest='randomize_envvars',
-        default=False,
-        help='Insert a random values on envvars of your tests'
+    """Parse pytest.ini env_files section"""
+    parser.addini(
+        'env_files',
+        type='linelist',
+        help='A line separated list of env files to parse',
     )
 
 
-def pytest_cmdline_main(config):
-    """Get parameters from command line and make actions"""
-    if config.option.envvars_validate and is_django_project():
-        pytest_envvars_validator = PytestEnvvarsValidator()
-        config.pluginmanager.register(pytest_envvars_validator)
-    elif config.option.randomize_envvars and is_django_project():
-        randomize_envvars = RandomizeEnvvars()
-        config.pluginmanager.register(randomize_envvars)
+@pytest.hookimpl(tryfirst=True)
+def pytest_load_initial_conftests(args, early_config, parser):
+    """Load config files and randomize envvars from pytest.ini"""
+    fullpath_filenames = []
+    for filename in early_config.getini("env_files"):
+        fullpath_filenames += glob.glob(f'**/{filename}', recursive=True)
+
+    for filename in fullpath_filenames:
+        with open(filename, 'r', encoding='utf-8-sig') as config_file:
+            for line in config_file:
+                envvar, *_ = line.partition('=')
+                envvar = envvar.strip()
+
+            os.environ[envvar] = random.choice(['0', '1'])
