@@ -5,7 +5,6 @@ Reference: https://github.com/pytest-dev/pytest-django
 
 import os
 import sys
-from importlib import reload
 
 
 def is_django_project():
