@@ -30,21 +30,18 @@ def django_settings_is_configured():
     return ret
 
 
-def get_custom_envvars():
-    """Return custom envvars of django project"""
-    from django.conf import settings, global_settings
+def get_base_envvars():
+    """Return base envvars of django project"""
+    from django.conf import global_settings
     common_envvar_names = {
         "BASE_DIR",
         "BASE_PATH",
         "ROOT_URLCONF",
     }
-
     django_global_settings = set(global_settings.__dict__.keys()).union(common_envvar_names)
-    django_settings = settings._explicit_settings
-    custom_envvars = django_settings.difference(django_global_settings)
+    django_global_settings = {
+        conf for conf in django_global_settings
+        if not conf.startswith('_') and not conf.islower()
+    }
 
-    # avoid conflict on load with _dj_autoclear_mailbox of pytest-django
-    import django.conf
-    reload(django.conf)
-
-    return custom_envvars
+    return django_global_settings
