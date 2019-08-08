@@ -1,4 +1,4 @@
-def test_app_model_test(django_testdir, default_env_file):
+def test_app_model_test(django_testdir, default_env_file, default_tox_ini_file):
     django_testdir.create_test_module("""
         import pytest
 
@@ -16,7 +16,7 @@ def test_app_model_test(django_testdir, default_env_file):
     result.stdout.fnmatch_lines(["*test_product_exists_with_products PASSED*"])
 
 
-def test_app_get_request(django_testdir, default_env_file):
+def test_app_get_request(django_testdir, default_env_file, default_tox_ini_file):
     django_testdir.create_test_module("""
         import pytest
 

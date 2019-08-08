@@ -1,7 +1,7 @@
 from collections import Counter
 
 
-def test_read_envvar_from_context_with_wrong_tests(django_testdir, default_env_file):
+def test_read_envvar_from_context_with_wrong_tests(django_testdir, default_env_file, default_tox_ini_file):
     django_testdir.create_test_module("""
         import os
         import pytest
@@ -27,7 +27,7 @@ def test_read_envvar_from_context_with_wrong_tests(django_testdir, default_env_f
     assert Counter(output)['AssertionError:'] == 2
 
 
-def test_read_envvar_from_context_with_correct_test(django_testdir, default_env_file):
+def test_read_envvar_from_context_with_correct_test(django_testdir, default_env_file, default_tox_ini_file):
     django_testdir.create_test_module("""
         import pytest
         from tests.pytest_envvars_django_test.core.views import some_function
