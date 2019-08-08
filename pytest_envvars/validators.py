@@ -2,7 +2,7 @@ import random
 import os
 from importlib import reload, import_module
 
-from .django_utils import get_custom_envvars, is_django_project
+from .django_utils import get_custom_envvars
 from .utils import get_modules_to_reload
 
 
@@ -23,12 +23,11 @@ class PytestEnvvarsValidator:
             module = getattr(mocked_object, '__module__', None) or getattr(mocked_object, '__name__', None)
             dont_reload_modules.append(module)
 
-        if is_django_project:
-            from django import conf
-            settings_str = os.environ.get("DJANGO_SETTINGS_MODULE")
-            settings = import_module(settings_str)
-            reload(conf)
-            reload(settings)
+        from django import conf
+        settings_str = os.environ.get("DJANGO_SETTINGS_MODULE")
+        settings = import_module(settings_str)
+        reload(conf)
+        reload(settings)
 
         for module in dont_reload_modules:
             try:
