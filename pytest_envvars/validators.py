@@ -38,3 +38,9 @@ class PytestEnvvarsValidator:
         for module_str in modules:
             module = import_module(module_str)
             reload(module)
+
+
+class RandomizeEnvvars:
+
+    def pytest_load_initial_conftests(args, early_config, parser):
+        pass
