@@ -1,6 +1,6 @@
-import glob
 import os
 import random
+from pathlib import Path
 
 import pytest
 from pytest_envvars.django_utils import is_django_project, get_base_envvars
@@ -19,9 +19,12 @@ def pytest_addoption(parser):
 def pytest_load_initial_conftests(args, early_config, parser):
     """Load config files and randomize envvars from pytest.ini"""
     ignored_django_envvars = get_base_envvars() if is_django_project() else set()
-    fullpath_filenames = []
+    fullpath_filenames = set()
     for filename in early_config.getini("env_files"):
-        fullpath_filenames += glob.glob(f'**/{filename}', recursive=True)
+        fullpath_filenames.update({
+            p.absolute() for p in Path().rglob(filename)
+            if p.is_file()
+        })
 
     for filename in fullpath_filenames:
         with open(filename, 'r', encoding='utf-8-sig') as config_file:
