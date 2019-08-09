@@ -17,9 +17,7 @@ Warning: pytest-envvars is **beta**.
 What is pytest-envvars?
 -----------------------
 
-pytest-envvars change values of environment variables on your unit tests to check consistency of mocks. If the test has a wrong mock, this test will be broken.
-
-pytest-envvars changes the values of the environment variables in your unit tests to check the consistency of the mocks. If the test has a wrong mock, this test will be broken due to changes in the original values of the environment variables.
+pytest-envvars randomize values of environment variables on your unit tests to check consistency of mocks about configuration. If the test has a wrong mock, this test will be broken.
 
 Install
 -------
@@ -31,6 +29,14 @@ Install
 Use
 ---
 
+You need write some changes on `pytest.ini` file, like that...
+
 .. code-block:: bash
 
-    $ pytest --envvars-validate
+    [pytest]
+    pytestenvvars__env_files =
+        .env
+    pytestenvvars__dont_randomize_envvars =
+        CACHE_URL
+
+On this example above the plugin read `.env` (from `pytestenvvars__env_files` section) file of your project and randomize **ALL** envvar configuration on that file, if you dont need randomize some envvar configuration you need add this envvar to `pytestenvvars__dont_randomize_envvars` section like shown above.
