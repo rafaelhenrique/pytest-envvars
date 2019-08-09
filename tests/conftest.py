@@ -28,7 +28,7 @@ def default_tox_ini_file(testdir):
         """
         [pytest]
         addopts = -vv --tb=native
-        env_files =
+        pytestenvvars__env_files =
             .env
         """
     )
@@ -52,8 +52,13 @@ def django_testdir(request, testdir):
         envfile.write(dedent(env_code), ensure=True)
         return envfile
 
+    def makeini(configuration, filename="tox.ini"):
+        inifile = project_root.join(filename)
+        inifile.write(dedent(configuration), ensure=True)
+        return inifile
+
     testdir.create_test_module = create_test_module
     testdir.create_env_file = create_env_file
+    testdir.makeini = makeini
     testdir.project_root = project_root
-
     return testdir
