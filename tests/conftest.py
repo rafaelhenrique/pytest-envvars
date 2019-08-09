@@ -35,7 +35,7 @@ def default_tox_ini_file(testdir):
 
 
 @pytest.fixture(scope="function")
-def django_testdir(request, testdir, default_django_environment):
+def django_testdir(request, testdir):
     project_root = testdir.tmpdir
     project_source = REPOSITORY_ROOT.joinpath(PROJECT_NAME)
     project_destination = project_root.join(PROJECT_NAME)

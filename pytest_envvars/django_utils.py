@@ -5,12 +5,22 @@ Reference: https://github.com/pytest-dev/pytest-django
 
 import os
 import sys
+from pathlib import Path
 
 
 def is_django_project():
-    """Return False when no Django settings are available"""
+    """Return False when is not a Django project"""
     if django_settings_is_configured():
         return True
+
+    for manage_file in Path().rglob("manage.py"):
+        if not manage_file.is_file():
+            continue
+
+        with open(manage_file) as manage_buffer:
+            for line in manage_buffer:
+                if 'from django' in line or 'import django' in line:
+                    return True
     return False
 
 

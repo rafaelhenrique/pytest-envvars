@@ -1,11 +1,20 @@
+from unittest import mock
+
 from pytest_envvars.django_utils import get_base_envvars, is_django_project
 
 
-def test_is_django_project_without_django_project():
+@mock.patch('pytest_envvars.django_utils.Path.rglob')
+def test_is_django_project_without_django_project(mocked_rglob):
+    mocked_rglob.return_value = []
     assert is_django_project() is False
 
 
-def test_is_django_project_with_django_project(default_django_environment):
+def test_is_django_project_with_django_project_configured_settings(default_django_environment):
+    assert is_django_project() is True
+
+
+def test_is_django_project_with_django_project_manage_file(django_testdir):
+    django_testdir.create_test_module('import django', filename='manage.py')
     assert is_django_project() is True
 
 
