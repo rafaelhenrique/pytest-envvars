@@ -1,6 +1,13 @@
 Changelog
 ---------
 
+1.0.0
+~~~~~
+
+* First stable release \o/
+* Remove parameter '--envvars-validate';
+* Now all configuration of pytest-envvars will be on 'pytest.ini' by 'pytestenvvars__env_files' and 'pytestenvvars__dont_randomize_envvars' configurations.
+
 0.0.1
 ~~~~~
 
