@@ -8,12 +8,6 @@ pytest-envvars
 
 Pytest plugin to validate use of envvars on your tests
 
-
-Note
-----
-
-Warning: pytest-envvars is **beta**.
-
 What is pytest-envvars?
 -----------------------
 
@@ -29,7 +23,7 @@ Install
 Use
 ---
 
-You need write some changes on `pytest.ini` file, like that...
+You need write some changes on ``pytest.ini`` file, like that...
 
 .. code-block:: bash
 
@@ -39,4 +33,4 @@ You need write some changes on `pytest.ini` file, like that...
     pytestenvvars__dont_randomize_envvars =
         CACHE_URL
 
-On this example above the plugin read `.env` (from `pytestenvvars__env_files` section) file of your project and randomize **ALL** envvar configuration on that file, if you dont need randomize some envvar configuration you need add this envvar to `pytestenvvars__dont_randomize_envvars` section like shown above.
+On this example above the plugin read ``.env`` file (from ``pytestenvvars__env_files`` section) of your project and randomize **ALL** envvar configuration on that file, if you dont need randomize some envvar configuration you need add this envvar to ``pytestenvvars__dont_randomize_envvars`` section like shown above.
