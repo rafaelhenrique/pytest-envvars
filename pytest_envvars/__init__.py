@@ -20,6 +20,30 @@ def pytest_addoption(parser):
     )
 
 
+def set_randomized_env_vars_from_list(
+    source_list, ignored_django_envvars, ignored_envvars
+):
+    """
+    param `source_list` is a list of strings like: 'FOO=barbaz'
+    here the value is randomized like: FOO=1010101,
+    and set the new value in os.environ['FOO'] = 1010101
+    """
+
+    randomized_envvars = []
+    for line in source_list:
+        envvar, _, value = line.partition('=')
+        envvar = envvar.strip()
+        value = value.strip()
+        randomized_envvars.append((envvar, value))
+
+        if envvar in ignored_django_envvars or envvar in ignored_envvars:
+            os.environ[envvar] = value
+        else:
+            os.environ[envvar] = random.choice(['0', '1'])
+
+    return randomized_envvars
+
+
 @pytest.hookimpl(tryfirst=True)
 def pytest_load_initial_conftests(args, early_config, parser):
     """Load config files and randomize envvars from pytest.ini"""
@@ -32,19 +56,13 @@ def pytest_load_initial_conftests(args, early_config, parser):
             if p.is_file()
         })
 
-    envvars = []
     for filename in fullpath_filenames:
         with open(filename, 'r', encoding='utf-8-sig') as config_file:
-            for line in config_file:
-                envvar, _, value = line.partition('=')
-                envvar = envvar.strip()
-                value = value.strip()
-                envvars.append((envvar, value))
-
-                if envvar in ignored_django_envvars or envvar in ignored_envvars:
-                    os.environ[envvar] = value
-                else:
-                    os.environ[envvar] = random.choice(['0', '1'])
+            set_randomized_env_vars_from_list(
+                config_file.readlines(),
+                ignored_django_envvars,
+                ignored_envvars
+            )
 
     # very useful in unit tests...
     # os.environ['PYTEST_ENVVARS_DEBUG'] = f"{envvars} - {ignored_envvars}"

@@ -1,4 +1,5 @@
 from collections import Counter
+from pytest_envvars import set_randomized_env_vars_from_list
 
 
 def test_read_envvar_from_context_with_wrong_tests(
@@ -100,3 +101,27 @@ def test_read_envvar_from_context_with_wrong_tests_and_ignored_envvars(
         "*test_context_values PASSED*",
         "*test_some_function PASSED*",
     ])
+
+
+def test_set_randomized_env_vars_from_list():
+    # given:
+    input_env_vars = [
+        'FOO=123',
+        'BAR=1==2',
+        'BAZ=====1==2',
+    ]
+    expected_env_vars = [
+        ('FOO', '123'),
+        ('BAR', '1==2'),
+        ('BAZ', '====1==2'),
+    ]
+    ignored_django_envvars = set()
+    ignored_envvars = set()
+
+    # when
+    result = set_randomized_env_vars_from_list(
+        input_env_vars, ignored_django_envvars, ignored_envvars
+    )
+
+    # then:
+    assert result == expected_env_vars
