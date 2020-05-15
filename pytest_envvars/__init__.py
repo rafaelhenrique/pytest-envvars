@@ -8,6 +8,14 @@ from pytest_envvars.django_utils import is_django_project, get_base_envvars
 
 def pytest_addoption(parser):
     """Parse pytest.ini env_files section"""
+    group = parser.getgroup("envvars")
+    group.addoption(
+        "--validate-envvars",
+        action="store_true",
+        dest="validate_envvars",
+        default=False,
+        help="Validate envvars mocks",
+    )
     parser.addini(
         'pytestenvvars__env_files',
         type='linelist',
@@ -21,7 +29,7 @@ def pytest_addoption(parser):
 
 
 def set_randomized_env_vars_from_list(
-    source_list, ignored_django_envvars, ignored_envvars
+    source_list, ignored_django_envvars, ignored_envvars, randomize=False
 ):
     """
     param `source_list` is a list of strings like: 'FOO=barbaz'
@@ -36,7 +44,13 @@ def set_randomized_env_vars_from_list(
         value = value.strip()
         randomized_envvars.append((envvar, value))
 
-        if envvar in ignored_django_envvars or envvar in ignored_envvars:
+        no_randomize = any([
+            randomize is False,
+            envvar in ignored_django_envvars,
+            envvar in ignored_envvars,
+        ])
+
+        if no_randomize:
             os.environ[envvar] = value
         else:
             os.environ[envvar] = random.choice(['0', '1'])
@@ -47,6 +61,11 @@ def set_randomized_env_vars_from_list(
 @pytest.hookimpl(tryfirst=True)
 def pytest_load_initial_conftests(args, early_config, parser):
     """Load config files and randomize envvars from pytest.ini"""
+
+    randomize = False
+    if "--validate-envvars" in args:
+        randomize = True
+
     ignored_django_envvars = get_base_envvars() if is_django_project() else set()
     ignored_envvars = early_config.getini("pytestenvvars__dont_randomize_envvars")
     fullpath_filenames = set()
@@ -61,7 +80,8 @@ def pytest_load_initial_conftests(args, early_config, parser):
             set_randomized_env_vars_from_list(
                 config_file.readlines(),
                 ignored_django_envvars,
-                ignored_envvars
+                ignored_envvars,
+                randomize,
             )
 
     # very useful in unit tests...

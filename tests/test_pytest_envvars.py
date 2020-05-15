@@ -23,7 +23,7 @@ def test_read_envvar_from_context_with_wrong_tests(
             assert some_function() == 'xablau'
     """)
 
-    result = django_testdir.runpytest()
+    result = django_testdir.runpytest("--validate-envvars")
     assert result.ret == 1
     result.stdout.fnmatch_lines([
         "*test_context_values FAILED*",
@@ -58,7 +58,7 @@ def test_read_envvar_from_context_with_correct_test(
             assert some_function() == 'xablau'
     """)
 
-    result = django_testdir.runpytest()
+    result = django_testdir.runpytest("--validate-envvars")
     assert result.ret == 0
     result.stdout.fnmatch_lines([
         "*test_context_values PASSED*",
@@ -82,6 +82,35 @@ def test_read_envvar_from_context_with_wrong_tests_and_ignored_envvars(
         """
     )
     django_testdir.create_test_module("""
+        import pytest
+        from tests.pytest_envvars_django_test.core.views import some_function
+
+        pytestmark = pytest.mark.django_db
+
+        def test_context_values(client):
+            response = client.get('/')
+            assert response.context['pytest_envvar_generic_use'] == 'xablau'
+
+        def test_some_function(settings):
+            assert some_function() == 'xablau'
+    """)
+
+    result = django_testdir.runpytest("--validate-envvars")
+    assert result.ret == 0
+    result.stdout.fnmatch_lines([
+        "*test_context_values PASSED*",
+        "*test_some_function PASSED*",
+    ])
+
+
+def test_read_envvar_from_context_with_wrong_tests_without_validate_envvars_param(
+    django_testdir,
+    default_env_file,
+    default_tox_ini_file,
+    default_django_environment
+):
+    django_testdir.create_test_module("""
+        import os
         import pytest
         from tests.pytest_envvars_django_test.core.views import some_function
 
