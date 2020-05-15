@@ -4,6 +4,7 @@ Changelog
 1.1.0
 ~~~~~
 * Add command line parameter called '--validate-envvars' to enable execution of plugin.
+* Fix plugin path on to run tox lint
 
 1.0.0
 ~~~~~
