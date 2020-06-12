@@ -154,3 +154,45 @@ def test_set_randomized_env_vars_from_list():
 
     # then:
     assert result == expected_env_vars
+
+
+def test_get_value_of_envvar_by_param(
+    django_testdir,
+    default_env_file,
+    default_tox_ini_file,
+    default_django_environment,
+):
+    django_testdir.create_test_module("""
+        import pytest
+
+        def test_get_value_of_envvar_by_param(settings):
+            assert settings.PYTEST_ENVVAR_GENERIC_USE == '0'
+
+    """)
+
+    result = django_testdir.runpytest("--validate-envvars", "--envvars-value=0")
+    assert result.ret == 0
+    result.stdout.fnmatch_lines([
+        "*test_get_value_of_envvar_by_param PASSED*",
+    ])
+
+
+def test_get_value_of_envvar_by_param_with_wrong_value(
+    django_testdir,
+    default_env_file,
+    default_tox_ini_file,
+    default_django_environment,
+):
+    django_testdir.create_test_module("""
+        import pytest
+
+        def test_get_value_of_envvar_by_param_with_wrong_value(settings):
+            assert settings.PYTEST_ENVVAR_GENERIC_USE == '0'
+
+    """)
+
+    result = django_testdir.runpytest("--validate-envvars", "--envvars-value=1")
+    assert result.ret == 1
+    result.stdout.fnmatch_lines([
+        "*test_get_value_of_envvar_by_param_with_wrong_value FAILED*",
+    ])

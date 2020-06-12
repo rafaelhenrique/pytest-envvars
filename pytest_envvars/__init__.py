@@ -16,6 +16,14 @@ def pytest_addoption(parser):
         default=False,
         help="Validate envvars mocks",
     )
+    group.addoption(
+        "--envvars-value",
+        dest="envvars_value",
+        default=False,
+        type=int,
+        choices=[0, 1],
+        help="Select value of envvars",
+    )
     parser.addini(
         'pytestenvvars__env_files',
         type='linelist',
@@ -29,7 +37,7 @@ def pytest_addoption(parser):
 
 
 def set_randomized_env_vars_from_list(
-    source_list, ignored_django_envvars, ignored_envvars, randomize=False
+    source_list, ignored_django_envvars, ignored_envvars, randomize=False, envvars_value=None
 ):
     """
     param `source_list` is a list of strings like: 'FOO=barbaz'
@@ -53,7 +61,7 @@ def set_randomized_env_vars_from_list(
         if no_randomize:
             os.environ[envvar] = value
         else:
-            os.environ[envvar] = random.choice(['0', '1'])
+            os.environ[envvar] = envvars_value if envvars_value else random.choice(['0', '1'])
 
     return randomized_envvars
 
@@ -62,9 +70,11 @@ def set_randomized_env_vars_from_list(
 def pytest_load_initial_conftests(args, early_config, parser):
     """Load config files and randomize envvars from pytest.ini"""
 
-    randomize = False
-    if "--validate-envvars" in args:
-        randomize = True
+    parsed_args = parser.parse(args)
+
+    envvars_value = None
+    if parsed_args.envvars_value is not False:
+        envvars_value = str(parsed_args.envvars_value)
 
     ignored_django_envvars = get_base_envvars() if is_django_project() else set()
     ignored_envvars = early_config.getini("pytestenvvars__dont_randomize_envvars")
@@ -81,7 +91,8 @@ def pytest_load_initial_conftests(args, early_config, parser):
                 config_file.readlines(),
                 ignored_django_envvars,
                 ignored_envvars,
-                randomize,
+                parsed_args.validate_envvars,
+                envvars_value,
             )
 
     # very useful in unit tests...
