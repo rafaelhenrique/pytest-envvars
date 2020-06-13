@@ -22,11 +22,11 @@ clean-build:
 install-tox:
 	@pip install tox
 
-test-tox-recreate: clean install-tox ## Run tests with tox and Python 3.7
-	tox -e py37,lint -r
+test-tox-recreate: clean install-tox ## Run tests with tox and Python 3.8
+	tox -e py38,lint -r
 
 test: ## Run tests
-	tox -e py37,lint
+	tox -e py38,lint
 
 install-tools-for-release:
 	@pip install --upgrade setuptools wheel twine
