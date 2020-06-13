@@ -1,5 +1,9 @@
 from collections import Counter
-from pytest_envvars import set_randomized_env_vars_from_list
+from pathlib import PosixPath
+from unittest import mock
+
+from pytest_envvars import (get_fullpath_filenames,
+                            set_randomized_env_vars_from_list)
 
 
 def test_read_envvar_from_context_with_wrong_tests(
@@ -196,3 +200,33 @@ def test_get_value_of_envvar_by_param_with_wrong_value(
     result.stdout.fnmatch_lines([
         "*test_get_value_of_envvar_by_param_with_wrong_value FAILED*",
     ])
+
+
+@mock.patch("pytest_envvars.Path.rglob")
+def test_get_fullpath_filenames(
+    mocked_rglob,
+    default_env_file,
+):
+    class FakePosixPath:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def is_file(self):
+            return True
+
+        def absolute(self):
+            return PosixPath("fakedir/.env")
+
+    mocked_rglob.return_value = [FakePosixPath("pytest_envvars_django_test/.env")]
+    fullpath_env_files = get_fullpath_filenames([".env"])
+
+    assert fullpath_env_files == {PosixPath("fakedir/.env")}
+
+
+@mock.patch('pytest_envvars.Path.rglob')
+def test_get_fullpath_filenames_without_file(
+    mocked_rglob,
+    default_env_file,
+):
+    fullpath_env_files = get_fullpath_filenames([".xablau"])
+    assert fullpath_env_files == set()

@@ -1,9 +1,11 @@
 import os
 import random
-from pathlib import Path
+from pathlib import Path, PosixPath
+from typing import List, Set
 
 import pytest
-from pytest_envvars.django_utils import is_django_project, get_base_envvars
+
+from pytest_envvars.django_utils import get_base_envvars, is_django_project
 
 
 def pytest_addoption(parser):
@@ -66,6 +68,24 @@ def set_randomized_env_vars_from_list(
     return randomized_envvars
 
 
+def get_fullpath_filenames(filenames: List[str]) -> Set[PosixPath]:
+    """Get filenames list and return a fullpath of these files
+
+    Params:
+        filenames (list): List of strings with filenames
+
+    Returns:
+        Set[PosixPath]: A set with one or more PosixPath objects
+    """
+    fullpath_filenames = set()
+    for filename in filenames:
+        fullpath_filenames.update({
+            path.absolute() for path in Path().rglob(filename)
+            if path.is_file()
+        })
+    return fullpath_filenames
+
+
 @pytest.hookimpl(tryfirst=True)
 def pytest_load_initial_conftests(args, early_config, parser):
     """Load config files and randomize envvars from pytest.ini"""
@@ -78,14 +98,9 @@ def pytest_load_initial_conftests(args, early_config, parser):
 
     ignored_django_envvars = get_base_envvars() if is_django_project() else set()
     ignored_envvars = early_config.getini("pytestenvvars__dont_randomize_envvars")
-    fullpath_filenames = set()
-    for filename in early_config.getini("pytestenvvars__env_files"):
-        fullpath_filenames.update({
-            p.absolute() for p in Path().rglob(filename)
-            if p.is_file()
-        })
-
-    for filename in fullpath_filenames:
+    env_files = early_config.getini("pytestenvvars__env_files")
+    fullpath_env_files = get_fullpath_filenames(env_files)
+    for filename in fullpath_env_files:
         with open(filename, 'r', encoding='utf-8-sig') as config_file:
             set_randomized_env_vars_from_list(
                 config_file.readlines(),
