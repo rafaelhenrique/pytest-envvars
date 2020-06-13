@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+1.2.1
+~~~~~
+* Change supported versions on setup
+
 1.2.0
 ~~~~~
 * Add command line parameter called '--envvars-value' to set default value for ALL envvars
