@@ -1,7 +1,7 @@
 import os
 import random
 from pathlib import Path, PosixPath
-from typing import List, Set
+from typing import Any, List, Set
 
 import pytest
 
@@ -39,16 +39,26 @@ def pytest_addoption(parser):
 
 
 def set_randomized_env_vars_from_list(
-    source_list, ignored_django_envvars, ignored_envvars, randomize=False, envvars_value=None
-):
-    """
-    param `source_list` is a list of strings like: 'FOO=barbaz'
-    here the value is randomized like: FOO=1010101,
-    and set the new value in os.environ['FOO'] = 1010101
-    """
+    envvar_value_list: List[str],
+    ignored_django_envvars: Set[str],
+    ignored_envvars: Set[str],
+    randomize: bool = False,
+    envvars_value: Any = None,
+) -> List[tuple]:
+    """Get envvar_value_list split this list into envvar and value and randomize values.
 
+    Params:
+        envvar_value_list (list): list with envvars and values, eg. ['FOO=123', 'BAR=432']
+        ignored_django_envvars (set): set with envvars of django (used only in django projects)
+        ignored_envvars (set): set with ignored envvars added in configuration file
+        randomize (bool): True for randomize OR False for no randomize envvars
+        envvars_value (Any or None): Pass some value for all envvars OR None if dont pass anything
+
+    Returns:
+        List(tuples): List with tuples envvar and value, eg. [('FOO', '0'), ('BAR', '0')]
+    """
     randomized_envvars = []
-    for line in source_list:
+    for line in envvar_value_list:
         envvar, _, value = line.partition('=')
         envvar = envvar.strip()
         value = value.strip()
