@@ -41,3 +41,10 @@ Before that configuration to run validation you need run pytest with flag ``--va
 
     pytest --validate-envvars
 
+To debug purpose you can use ``--envvars-value`` to set a default value for all envvars. This parameter accept only two options 0 or 1, see this example:
+
+.. code-block:: bash
+
+    pytest --validate-envvars --envvars-value=0
+
+Using the plugin that way you will apply the value 0 to ALL of your envvars.
