@@ -59,6 +59,9 @@ def set_randomized_env_vars_from_list(
     """
     randomized_envvars = []
     for line in envvar_value_list:
+        if line.startswith("#") or line.strip() == "":
+            continue
+
         envvar, _, value = line.partition('=')
         envvar = envvar.strip()
         value = value.strip()

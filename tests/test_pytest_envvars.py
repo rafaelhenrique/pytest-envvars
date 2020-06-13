@@ -160,6 +160,45 @@ def test_set_randomized_env_vars_from_list():
     assert result == expected_env_vars
 
 
+def test_set_randomized_env_vars_from_list_blank_lines():
+    # given:
+    input_env_vars = [
+        ' ',
+        '  ',
+        '',
+    ]
+    expected_env_vars = []
+    ignored_django_envvars = set()
+    ignored_envvars = set()
+
+    # when
+    result = set_randomized_env_vars_from_list(
+        input_env_vars, ignored_django_envvars, ignored_envvars
+    )
+
+    # then:
+    assert result == expected_env_vars
+
+
+def test_set_randomized_env_vars_from_list_commented_lines():
+    # given:
+    input_env_vars = [
+        '# this is a comment',
+        '## this is a comment too',
+    ]
+    expected_env_vars = []
+    ignored_django_envvars = set()
+    ignored_envvars = set()
+
+    # when
+    result = set_randomized_env_vars_from_list(
+        input_env_vars, ignored_django_envvars, ignored_envvars
+    )
+
+    # then:
+    assert result == expected_env_vars
+
+
 def test_get_value_of_envvar_by_param(
     django_testdir,
     default_env_file,
