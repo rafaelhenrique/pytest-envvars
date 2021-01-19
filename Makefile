@@ -23,10 +23,10 @@ install-tox:
 	@pip install tox
 
 test-tox-recreate: clean install-tox ## Run tests with tox and Python 3.8
-	tox -e py38,lint -r
+	tox -e py39,lint -r
 
 test: ## Run tests
-	tox -e py38,lint
+	tox -e py39,lint
 
 install-tools-for-release:
 	@pip install --upgrade setuptools wheel twine
@@ -41,4 +41,3 @@ release: clean install-tools-for-release dist ## Release package to PyPI
 	@git tag `python setup.py -q version`
 	@git push origin `python setup.py -q version`
 	@python -m twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
-
