@@ -52,7 +52,7 @@ setup(
     description='Pytest plugin to validate use of envvars on your tests ',
     long_description=read('README.rst'),
     packages=['pytest_envvars'],
-    install_requires=['pytest>=3.0.0'],
+    install_requires=['pytest>=3.0.0', 'python-dotenv>=0.15.0'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Framework :: Pytest',
