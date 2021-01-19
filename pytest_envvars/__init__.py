@@ -45,7 +45,7 @@ def set_randomized_env_vars_from_file(
     ignored_envvars: Set[str],
     randomize: bool = False,
     envvars_value: Any = None,
-) -> dict:
+) -> List[tuple]:
     """Parse .env file and randomize values.
 
     Params:
@@ -59,6 +59,8 @@ def set_randomized_env_vars_from_file(
         List(tuples): List with tuples envvar and value, eg. [('FOO', '0'), ('BAR', '0')]
     """
     randomized_envvars = dotenv_values(dotenv_path=filename)
+    result_envvars = []
+
     for envvar, value in randomized_envvars.items():
         no_randomize = any([
             randomize is False,
@@ -67,11 +69,14 @@ def set_randomized_env_vars_from_file(
         ])
 
         if no_randomize:
-            os.environ[envvar] = value
+            new_value = value
         else:
-            os.environ[envvar] = envvars_value if envvars_value else random.choice(['0', '1'])
+            new_value = envvars_value if envvars_value else random.choice(['0', '1'])
 
-    return randomized_envvars
+        os.environ[envvar] = new_value
+        result_envvars.append((envvar, new_value))
+
+    return result_envvars
 
 
 def get_fullpath_filenames(filenames: List[str]) -> Set[PosixPath]:

@@ -143,19 +143,123 @@ def test_set_randomized_env_vars_from_file(tmp_path):
         'BAR=1==2',
         'BAZ=====1==2',
     ]
-    expected_env_vars = {
-        'FOO': '123',
-        'BAR': '1==2',
-        'BAZ': '====1==2',
-    }
+    expected_env_vars = [
+        ('FOO', '123'),
+        ('BAR', '1==2'),
+        ('BAZ', '====1==2'),
+    ]
     ignored_django_envvars = set()
     ignored_envvars = set()
-    dotenv_file = tmp_path / ".env"
+    dotenv_file = tmp_path / "env"
     dotenv_file.write_text('\n'.join(input_env_vars))
 
     # when
     result = set_randomized_env_vars_from_file(
         dotenv_file, ignored_django_envvars, ignored_envvars
+    )
+
+    # then:
+    assert result == expected_env_vars
+
+
+def test_set_randomized_env_vars_from_file_with_randomize(tmp_path):
+    # given:
+    input_env_vars = [
+        'FOO=123',
+        'BAR=1==2',
+        'BAZ=====1==2',
+    ]
+    expected_env_vars = [
+        ('FOO', '1'),
+        ('BAR', '1'),
+        ('BAZ', '1'),
+    ]
+    ignored_django_envvars = set()
+    ignored_envvars = set()
+    dotenv_file = tmp_path / "env"
+    dotenv_file.write_text('\n'.join(input_env_vars))
+
+    # when
+    result = set_randomized_env_vars_from_file(
+        dotenv_file, ignored_django_envvars, ignored_envvars, True, "1"
+    )
+
+    # then:
+    assert result == expected_env_vars
+
+
+def test_set_randomized_env_vars_from_file_with_ignored_envvars(tmp_path):
+    # given:
+    input_env_vars = [
+        'FOO=123',
+        'BAR=1==2',
+        'BAZ=====1==2',
+    ]
+    expected_env_vars = [
+        ('FOO', '123'),
+        ('BAR', '1'),
+        ('BAZ', '1'),
+    ]
+    ignored_django_envvars = set()
+    ignored_envvars = {'FOO'}
+    dotenv_file = tmp_path / "env"
+    dotenv_file.write_text('\n'.join(input_env_vars))
+
+    # when
+    result = set_randomized_env_vars_from_file(
+        dotenv_file, ignored_django_envvars, ignored_envvars, True, "1"
+    )
+
+    # then:
+    assert result == expected_env_vars
+
+
+def test_set_randomized_env_vars_from_file_with_ignored_django_envvars(tmp_path):
+    # given:
+    input_env_vars = [
+        'FOO=123',
+        'BAR=1==2',
+        'BAZ=====1==2',
+    ]
+    expected_env_vars = [
+        ('FOO', '1'),
+        ('BAR', '1==2'),
+        ('BAZ', '1'),
+    ]
+    ignored_django_envvars = {'BAR'}
+    ignored_envvars = set()
+    dotenv_file = tmp_path / "env"
+    dotenv_file.write_text('\n'.join(input_env_vars))
+
+    # when
+    result = set_randomized_env_vars_from_file(
+        dotenv_file, ignored_django_envvars, ignored_envvars, True, "1"
+    )
+
+    # then:
+    assert result == expected_env_vars
+
+
+def test_set_randomized_env_vars_from_file_with_ignored_envvars_and_django_envvars(tmp_path):
+    # given:
+    input_env_vars = [
+        'FOO=123',
+        'BAR=1==2',
+        'BAZ=====1==2',
+    ]
+    expected_env_vars = [
+        ('FOO', '123'),
+        ('BAR', '1==2'),
+        ('BAZ', '1'),
+    ]
+    ignored_django_envvars = {'BAR'}
+    ignored_envvars = {'FOO'}
+    dotenv_file = tmp_path / "env"
+    dotenv_file.write_text('\n'.join(input_env_vars))
+
+    # when
+    result = set_randomized_env_vars_from_file(
+        dotenv_file, ignored_django_envvars, ignored_envvars, True, "1"
     )
 
     # then:
