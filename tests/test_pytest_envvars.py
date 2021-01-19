@@ -3,7 +3,7 @@ from pathlib import PosixPath
 from unittest import mock
 
 from pytest_envvars import (get_fullpath_filenames,
-                            set_randomized_env_vars_from_list)
+                            set_randomized_env_vars_from_file)
 
 
 def test_read_envvar_from_context_with_wrong_tests(
@@ -136,63 +136,26 @@ def test_read_envvar_from_context_with_wrong_tests_without_validate_envvars_para
     ])
 
 
-def test_set_randomized_env_vars_from_list():
+def test_set_randomized_env_vars_from_file(tmp_path):
     # given:
     input_env_vars = [
         'FOO=123',
         'BAR=1==2',
         'BAZ=====1==2',
     ]
-    expected_env_vars = [
-        ('FOO', '123'),
-        ('BAR', '1==2'),
-        ('BAZ', '====1==2'),
-    ]
+    expected_env_vars = {
+        'FOO': '123',
+        'BAR': '1==2',
+        'BAZ': '====1==2',
+    }
     ignored_django_envvars = set()
     ignored_envvars = set()
+    dotenv_file = tmp_path / ".env"
+    dotenv_file.write_text('\n'.join(input_env_vars))
 
     # when
-    result = set_randomized_env_vars_from_list(
-        input_env_vars, ignored_django_envvars, ignored_envvars
-    )
-
-    # then:
-    assert result == expected_env_vars
-
-
-def test_set_randomized_env_vars_from_list_blank_lines():
-    # given:
-    input_env_vars = [
-        ' ',
-        '  ',
-        '',
-    ]
-    expected_env_vars = []
-    ignored_django_envvars = set()
-    ignored_envvars = set()
-
-    # when
-    result = set_randomized_env_vars_from_list(
-        input_env_vars, ignored_django_envvars, ignored_envvars
-    )
-
-    # then:
-    assert result == expected_env_vars
-
-
-def test_set_randomized_env_vars_from_list_commented_lines():
-    # given:
-    input_env_vars = [
-        '# this is a comment',
-        '## this is a comment too',
-    ]
-    expected_env_vars = []
-    ignored_django_envvars = set()
-    ignored_envvars = set()
-
-    # when
-    result = set_randomized_env_vars_from_list(
-        input_env_vars, ignored_django_envvars, ignored_envvars
+    result = set_randomized_env_vars_from_file(
+        dotenv_file, ignored_django_envvars, ignored_envvars
     )
 
     # then:

@@ -4,6 +4,7 @@ from pathlib import Path, PosixPath
 from typing import Any, List, Set
 
 import pytest
+from dotenv import dotenv_values
 
 from pytest_envvars.django_utils import get_base_envvars, is_django_project
 
@@ -38,17 +39,17 @@ def pytest_addoption(parser):
     )
 
 
-def set_randomized_env_vars_from_list(
-    envvar_value_list: List[str],
+def set_randomized_env_vars_from_file(
+    filename: Path,
     ignored_django_envvars: Set[str],
     ignored_envvars: Set[str],
     randomize: bool = False,
     envvars_value: Any = None,
-) -> List[tuple]:
-    """Get envvar_value_list split this list into envvar and value and randomize values.
+) -> dict:
+    """Parse .env file and randomize values.
 
     Params:
-        envvar_value_list (list): list with envvars and values, eg. ['FOO=123', 'BAR=432']
+        filename (Path): path to the .env file
         ignored_django_envvars (set): set with envvars of django (used only in django projects)
         ignored_envvars (set): set with ignored envvars added in configuration file
         randomize (bool): True for randomize OR False for no randomize envvars
@@ -57,16 +58,8 @@ def set_randomized_env_vars_from_list(
     Returns:
         List(tuples): List with tuples envvar and value, eg. [('FOO', '0'), ('BAR', '0')]
     """
-    randomized_envvars = []
-    for line in envvar_value_list:
-        if line.startswith("#") or line.strip() == "":
-            continue
-
-        envvar, _, value = line.partition('=')
-        envvar = envvar.strip()
-        value = value.strip()
-        randomized_envvars.append((envvar, value))
-
+    randomized_envvars = dotenv_values(dotenv_path=filename)
+    for envvar, value in randomized_envvars.items():
         no_randomize = any([
             randomize is False,
             envvar in ignored_django_envvars,
@@ -114,14 +107,13 @@ def pytest_load_initial_conftests(args, early_config, parser):
     env_files = early_config.getini("pytestenvvars__env_files")
     fullpath_env_files = get_fullpath_filenames(env_files)
     for filename in fullpath_env_files:
-        with open(filename, 'r', encoding='utf-8-sig') as config_file:
-            set_randomized_env_vars_from_list(
-                config_file.readlines(),
-                ignored_django_envvars,
-                ignored_envvars,
-                parsed_args.validate_envvars,
-                envvars_value,
-            )
+        set_randomized_env_vars_from_file(
+            filename,
+            ignored_django_envvars,
+            ignored_envvars,
+            parsed_args.validate_envvars,
+            envvars_value,
+        )
 
     # very useful in unit tests...
     # os.environ['PYTEST_ENVVARS_DEBUG'] = f"{envvars} - {ignored_envvars}"
